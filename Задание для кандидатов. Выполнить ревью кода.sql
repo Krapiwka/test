@@ -5,7 +5,7 @@ set nocount on
 begin
 	declare @RowCount int = (select count(*) from syn.SA_CustomerSeasonal)
 	declare @ErrorMessage varchar(max)
-
+	
 -- Проверка на корректность загрузки
 	if not exists (
 	select 1
@@ -19,7 +19,7 @@ begin
 			raiserror(@ErrorMessage, 3, 1)
 			return
 		end
-
+	
 	--Чтение из слоя временных данных
 	select
 		c.ID as ID_dbo_Customer
@@ -40,7 +40,7 @@ begin
 	where try_cast(cs.DateBegin as date) is not null
 		and try_cast(cs.DateEnd as date) is not null
 		and try_cast(isnull(cs.FlagActive, 0) as bit) is not null
-
+	
 	-- Определяем некорректные записи
 	-- Добавляем причину, по которой запись считается некорректной
 	select
@@ -68,7 +68,7 @@ begin
 		or try_cast(cs.DateBegin as date) is null
 		or try_cast(cs.DateEnd as date) is null
 		or try_cast(isnull(cs.FlagActive, 0) as bit) is null
-
+	
 	-- Обработка данных из файла
 	merge into syn.CustomerSeasonal as cs
 	using (
@@ -116,7 +116,7 @@ begin
 			,FlagActive as 'Активность'
 			,Reason as 'Причина'
 		from #BadInsertedRows
-
+		
 		return
 	end
 
